@@ -1,0 +1,31 @@
+# Netflix / Hulu / Spotify-style media server — https://jellyfin.org/docs/general/installation/container/
+# Start: cp .env.example .env && mkdir -p config cache media && docker compose up -d
+# UI:    http://localhost:8096
+#
+# Put movies/shows/music under ./media (or change MEDIA_PATH in .env)
+
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:${JELLYFIN_VERSION:-latest}
+    container_name: jellyfin
+    restart: unless-stopped
+    ports:
+      - "${JELLYFIN_HTTP_PORT:-8096}:8096"
+      - "${JELLYFIN_HTTPS_PORT:-8920}:8920"
+    volumes:
+      - ${CONFIG_PATH:-./config}:/config
+      - ${CACHE_PATH:-./cache}:/cache
+      - ${MEDIA_PATH:-./media}:/media
+    environment:
+      TZ: ${TZ:-America/New_York}
+    # Uncomment for NVIDIA hardware transcoding:
+    # runtime: nvidia
+    # environment:
+    #   NVIDIA_VISIBLE_DEVICES: all
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]

@@ -1,0 +1,20 @@
+# Expose any of the stacks to the public internet without opening router ports
+# Docs: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/
+#
+# 1. Create a tunnel in Zero Trust → Networks → Tunnels
+# 2. Copy the token into .env
+# 3. Route hostnames to local services, e.g.:
+#      photos.example.com  →  http://localhost:2283   (Immich)
+#      cloud.example.com   →  http://localhost:8080   (Nextcloud)
+#      media.example.com   →  http://localhost:8096   (Jellyfin)
+#      automations.example.com → http://localhost:5678 (n8n)
+#
+# Start: cp .env.example .env && docker compose up -d
+
+services:
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token ${TUNNEL_TOKEN}
+    network_mode: host

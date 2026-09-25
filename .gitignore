@@ -1,0 +1,12 @@
+.env
+**/.env
+**/library/
+**/postgres/
+**/media/
+**/config/
+**/cache/
+**/data/
+**/models/
+**/output/
+*.log
+.DS_Store

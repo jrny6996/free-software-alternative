@@ -1,0 +1,30 @@
+# Local image/video generation — NVIDIA GPU (recommended)
+# https://github.com/comfyanonymous/ComfyUI
+#
+# Start (GPU):  docker compose up -d
+# Start (CPU):  docker compose -f docker-compose.cpu.yaml up -d
+# UI:           http://localhost:8188
+#
+# Video generation needs serious VRAM/disk/electricity — part of the TCO discussion.
+
+services:
+  comfyui:
+    image: yanwk/comfyui-boot:cu124-slim
+    container_name: comfyui
+    restart: unless-stopped
+    ports:
+      - "${COMFYUI_PORT:-8188}:8188"
+    volumes:
+      - ${MODELS_PATH:-./models}:/root/ComfyUI/models
+      - ${OUTPUT_PATH:-./output}:/root/ComfyUI/output
+      - ${INPUT_PATH:-./input}:/root/ComfyUI/input
+      - ${CUSTOM_NODES_PATH:-./custom_nodes}:/root/ComfyUI/custom_nodes
+    environment:
+      CLI_ARGS: ${CLI_ARGS:---listen 0.0.0.0 --port 8188}
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]

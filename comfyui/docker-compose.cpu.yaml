@@ -1,0 +1,25 @@
+# Local image generation — CPU only (slow, for testing / no GPU)
+# https://github.com/YanWenKun/ComfyUI-Docker/tree/main/cpu
+#
+# Start:  docker compose -f docker-compose.cpu.yaml up -d
+#    or:  ./scaffold.sh --cpu
+# UI:     http://localhost:8188
+#
+# Expect minutes per image (SD 1.5), not seconds. Video workflows are
+# usually not practical on CPU — use a GPU or skip this stack.
+
+services:
+  comfyui:
+    image: yanwk/comfyui-boot:cpu
+    container_name: comfyui
+    restart: unless-stopped
+    ports:
+      - "${COMFYUI_PORT:-8188}:8188"
+    volumes:
+      - ${MODELS_PATH:-./models}:/root/ComfyUI/models
+      - ${OUTPUT_PATH:-./output}:/root/ComfyUI/output
+      - ${INPUT_PATH:-./input}:/root/ComfyUI/input
+      - ${CUSTOM_NODES_PATH:-./custom_nodes}:/root/ComfyUI/custom_nodes
+    environment:
+      # --cpu is required; --lowvram / --cache-none help on modest RAM hosts
+      CLI_ARGS: ${CLI_ARGS:---listen 0.0.0.0 --port 8188 --cpu --lowvram}
