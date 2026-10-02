@@ -49,12 +49,11 @@ services:
       postgres:
         condition: service_healthy
 
-    # uncomment to expose to public internet traffic via cloudflare tunnel
-
-    tunnel:
-      container_name: cloudflared-tunnel
-      image: cloudflare/cloudflared
-      restart: unless-stopped
-      command: tunnel run
-      environment:
-        - TUNNEL_TOKEN=${CLOUDFLARE_TOKEN}
+  # comment out to exclude cloudflare tunnel
+  n8ntunnel:
+    container_name: cloudflared-tunnel
+    image: cloudflare/cloudflared
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARE_TOKEN}
